@@ -2,54 +2,49 @@
 
 $searchRoot = 'c:/xampp/htdocs/Work7'; //стартовая директория
 
-$searchName = 'test.txt'; //искомый файл
+$searchName = 'test1.txt'; //искомый файл
 
-$searchResult = []; //результаты поиска
+$searchResult = [0, 1, 2]; //результаты поиска
+
+$m = 0;
 
 
-$files = [];
-function searchFile(string $searchRoot, string $searchName, array &$files, array &$searchResult, int $m)
+$elements = [];
+function searchFile(string $searchRoot, string $searchName, array &$elements, array &$searchResult, int $m)
 {
-    $files[$m] = scandir($searchRoot);
+    $elements[$m] = scandir($searchRoot);
 
-    $digits = count($files[$m]);
-    for ($k = $digits - 1; $k > 1; $k--) {
+    $count_elements = count($elements[$m]);
+    // die('count' . '    ' . $digits);
+    for ($k = $count_elements - 1; $k > 1; $k--) {
 
-        $str1 = sprintf($files[$m][$k]);
-        //die($files1.'    '.$files1[0][2]);
+        $str1 = sprintf($elements[$m][$k]);
+        // die('files' . '    ' . $files[0][7]);
 
         $str2 = $searchRoot . '/' . $str1;
 
         if (is_dir($str2)) {
 
-            searchFile($str2, $searchName, $files, $searchResult, $m + 1);
+            searchFile($str2, $searchName, $elements, $searchResult, $m + 1);
 
-        } else {
+        } else if (strpos($str2, "{$searchName}")) {
 
-            if (strpos($str2, "{$searchName}"))
-                $searchResult[] = $str2;
-            //    echo $str2 . PHP_EOL;
-        }
-
-
-        if ($m == 0 && $k == 2) {
-            if (array_key_exists("0", $searchResult)) {
-                foreach ($searchResult as $key => $value) {
-                    // echo sprintf($value) . PHP_EOL
-                    $filename = sprintf($value);
-                    if (filesize($filename) > 0) {
-                        echo 'Размер файла ' . $filename . ': ' . filesize($filename) . ' байт' . PHP_EOL;
-                    }
-
+            if ($searchResult[$m] != $str2) {
+                $searchResult[$m] = $str2;
+                echo sprintf($searchResult[$m]) . PHP_EOL;
+                $filename = sprintf($searchResult[$m]);
+                if (filesize($filename) > 0) {
+                    echo 'Размер файла ' . $filename . ': ' . filesize($filename) . ' байт' . PHP_EOL;
                 }
-            } else {
+            }
+        } else {
+            if ($m == 2 && $k == 2) {
                 echo 'Файлы не найдены!' . PHP_EOL;
             }
-            echo 'Konec' . PHP_EOL;
-
         }
+
     }
 }
 
 
-searchFile($searchRoot, $searchName, $files, $searchResult, 0);
+searchFile($searchRoot, $searchName, $elements, $searchResult, 0);
