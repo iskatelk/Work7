@@ -4,7 +4,7 @@ $searchRoot = 'c:/xampp/htdocs/Work7'; //стартовая директория
 
 $searchName = 'test.txt'; //искомый файл
 
-$searchResult = [0, 1, 2]; //результаты поиска
+$searchResult = []; //результаты поиска
 
 $depth = 0;
 
@@ -19,34 +19,38 @@ function searchFile(string $searchRoot, string $searchName, array &$folders, arr
     // die('count' . '    ' . $digits);
     for ($k = $countFolders - 1; $k > 1; $k--) {
 
-        $path1 = sprintf($folders[$depth][$k]);
+        // $path1 = sprintf($folders[$depth][$k]);
         // die('files' . '    ' . $files[0][7]);
 
-        $path2 = $searchRoot . '/' . $path1;
+        $path = $searchRoot . '/' . $folders[$depth][$k];
+        // $path = $searchRoot . '/' . $path1;
 
-        if (is_dir($path2)) {
+        if (is_dir($path)) {
 
-            searchFile($path2, $searchName, $folders, $searchResult, $depth + 1);
+            searchFile($path, $searchName, $folders, $searchResult, $depth + 1);
 
-        } else if (strpos($path2, "{$searchName}")) {
-
-            if ($searchResult[$depth] != $path2) {
-                $searchResult[$depth] = $path2;
-                echo sprintf($searchResult[$depth]) . PHP_EOL;
-                $filename = sprintf($searchResult[$depth]);
-                if (filesize($filename) > 0) {
-                    echo 'Размер файла ' . $filename . ': ' . filesize($filename) . ' байт' . PHP_EOL;
-                }
-            }
-            // $flag++;
         } else {
-            /*   if ($flag == 0) {
-                   echo 'Файлы не найдены!' . PHP_EOL;
-               }*/
+
+            if (strpos($path, "{$searchName}"))
+                $searchResult[] = $path;
+
         }
 
     }
+    return $searchResult;
 }
 
 
-searchFile($searchRoot, $searchName, $folders, $searchResult, 0);
+if (searchFile($searchRoot, $searchName, $folders, $searchResult, 0)) {
+    foreach ($searchResult as $key => $value) {
+        // echo sprintf($value) . PHP_EOL
+        $filename = $value;
+        if (filesize($filename) > 0) {
+            echo 'Размер файла ' . $filename . ': ' . filesize($filename) . ' байт' . PHP_EOL;
+        }
+
+    }
+} else {
+    echo 'Файлы не найдены!' . PHP_EOL;
+}
+echo 'End' . PHP_EOL;
