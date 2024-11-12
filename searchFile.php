@@ -2,49 +2,51 @@
 
 $searchRoot = 'c:/xampp/htdocs/Work7'; //стартовая директория
 
-$searchName = 'test1.txt'; //искомый файл
+$searchName = 'test.txt'; //искомый файл
 
 $searchResult = [0, 1, 2]; //результаты поиска
 
-$m = 0;
+$depth = 0;
 
 
-$elements = [];
-function searchFile(string $searchRoot, string $searchName, array &$elements, array &$searchResult, int $m)
+$folders = [];
+function searchFile(string $searchRoot, string $searchName, array &$folders, array &$searchResult, int $depth)
 {
-    $elements[$m] = scandir($searchRoot);
+    $folders[$depth] = scandir($searchRoot);
 
-    $count_elements = count($elements[$m]);
+    $countFolders = count($folders[$depth]);
+
     // die('count' . '    ' . $digits);
-    for ($k = $count_elements - 1; $k > 1; $k--) {
+    for ($k = $countFolders - 1; $k > 1; $k--) {
 
-        $str1 = sprintf($elements[$m][$k]);
+        $path1 = sprintf($folders[$depth][$k]);
         // die('files' . '    ' . $files[0][7]);
 
-        $str2 = $searchRoot . '/' . $str1;
+        $path2 = $searchRoot . '/' . $path1;
 
-        if (is_dir($str2)) {
+        if (is_dir($path2)) {
 
-            searchFile($str2, $searchName, $elements, $searchResult, $m + 1);
+            searchFile($path2, $searchName, $folders, $searchResult, $depth + 1);
 
-        } else if (strpos($str2, "{$searchName}")) {
+        } else if (strpos($path2, "{$searchName}")) {
 
-            if ($searchResult[$m] != $str2) {
-                $searchResult[$m] = $str2;
-                echo sprintf($searchResult[$m]) . PHP_EOL;
-                $filename = sprintf($searchResult[$m]);
+            if ($searchResult[$depth] != $path2) {
+                $searchResult[$depth] = $path2;
+                echo sprintf($searchResult[$depth]) . PHP_EOL;
+                $filename = sprintf($searchResult[$depth]);
                 if (filesize($filename) > 0) {
                     echo 'Размер файла ' . $filename . ': ' . filesize($filename) . ' байт' . PHP_EOL;
                 }
             }
+            // $flag++;
         } else {
-            if ($m == 2 && $k == 2) {
-                echo 'Файлы не найдены!' . PHP_EOL;
-            }
+            /*   if ($flag == 0) {
+                   echo 'Файлы не найдены!' . PHP_EOL;
+               }*/
         }
 
     }
 }
 
 
-searchFile($searchRoot, $searchName, $elements, $searchResult, 0);
+searchFile($searchRoot, $searchName, $folders, $searchResult, 0);
