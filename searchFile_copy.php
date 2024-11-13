@@ -50,8 +50,8 @@ if (!empty($searchResult)) {
     echo "Файл $searchName не найден";
 }
 $size = 0;
-$nonEmptyFile = array_filter($searchResult, function ($a) use ($size) {
-    return filesize($a) > $size;
+$nonEmptyFile = array_filter($searchResult, function ($pathFile) use ($size) {
+    return filesize($pathFile) > $size;
 });
 // $nonEmptyFile = array_filter($searchResult, "filesize");
 
