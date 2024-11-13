@@ -40,8 +40,20 @@ function searchFile(string $searchRoot, string $searchName, array &$folders, arr
     return $searchResult;
 }
 
+########################
 
-if (searchFile($searchRoot, $searchName, $folders, $searchResult, 0)) {
+searchFile($searchRoot, $searchName, $folders, $searchResult, 0);
+
+if (empty($searchResult)) {
+    echo "Файл $searchName не найден";
+} else {
+    foreach ($searchResult as $fileResult) {
+        echo 'Размер файла ' . $fileResult . ': ' . filesize($fileResult) . ' байт' . PHP_EOL;
+
+    }
+}
+/*
+ {
     foreach ($searchResult as $key => $value) {
         // echo sprintf($value) . PHP_EOL
         $filename = $value;
@@ -54,3 +66,4 @@ if (searchFile($searchRoot, $searchName, $folders, $searchResult, 0)) {
     echo 'Файлы не найдены!' . PHP_EOL;
 }
 echo 'End' . PHP_EOL;
+*/
