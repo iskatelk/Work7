@@ -9,6 +9,7 @@ function searchFile(string $searchRoot, string $searchName, array &$searchResult
     for ($k = $countFolders - 1; $k > 1; $k--) {
 
         $path = $searchRoot . '/' . $folders[$k];
+        // echo $path . PHP_EOL;
 
         if (is_dir($path)) {
 
@@ -17,6 +18,7 @@ function searchFile(string $searchRoot, string $searchName, array &$searchResult
         } else {
 
             if (strpos($path, "{$searchName}"))
+                // if (file_exists($path))
                 $searchResult[] = $path;
         }
     }
@@ -47,8 +49,11 @@ if (!empty($searchResult)) {
 } else {
     echo "Файл $searchName не найден";
 }
-
-$nonEmptyFile = array_filter($searchResult, "filesize");
+$size = 0;
+$nonEmptyFile = array_filter($searchResult, function ($a) use ($size) {
+    return filesize($a) > $size;
+});
+// $nonEmptyFile = array_filter($searchResult, "filesize");
 
 if (!empty($nonEmptyFile)) {
     echo "Найдены непустые файлы:" . PHP_EOL;
